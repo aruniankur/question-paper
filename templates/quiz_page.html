@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ quiz.title }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        .question-container {
+            display: none;
+        }
+        .question-container.active {
+            display: block;
+        }
+        .progress-container {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        // Function to start the countdown timer
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            var interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);  // Stop the timer
+                    document.getElementById('quiz-form').submit();  // Automatically submit the form when time is up
+                }
+            }, 1000);
+        }
+
+        // Function to handle question navigation
+        function showQuestion(index) {
+            const questions = document.querySelectorAll('.question-container');
+            questions.forEach((question, i) => {
+                question.classList.toggle('active', i === index);
+            });
+            updateProgress(index + 1, questions.length);
+        }
+
+        // Function to update the progress bar
+        function updateProgress(current, total) {
+            const progressBar = document.getElementById('progress-bar');
+            const progress = (current / total) * 100;
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = `${current} of ${total} questions`;
+        }
+
+        // Function to handle next and previous buttons
+        function navigateQuestion(direction) {
+            const questions = document.querySelectorAll('.question-container');
+            const current = Array.from(questions).findIndex(q => q.classList.contains('active'));
+            const next = current + direction;
+            if (next >= 0 && next < questions.length) {
+                showQuestion(next);
+            }
+        }
+
+        // Start the timer when the page loads
+        window.onload = function () {
+            var timeLimit = {{ quiz.time_limit }} * 60;  // Convert minutes to seconds
+            var display = document.querySelector('#time');
+            startTimer(timeLimit, display);
+
+            // Show the first question
+            showQuestion(0);
+        };
+    </script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">{{ quiz.title }}</h1>
+        <p class="text-center">{{ quiz.description }}</p>
+
+        <div class="d-flex justify-content-between mb-4">
+            <p><strong>Time Left:</strong> <span id="time">{{ quiz.time_limit }}:00</span></p>
+            <div class="progress-container">
+                <div class="progress" style="width: 100%;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+        </div>
+
+        <form id="quiz-form" method="POST" action="{{ url_for('quiz.submit_quiz', quiz_id=quiz.id) }}">
+            {% for question in questions %}
+                <div class="question-container" id="question-{{ loop.index }}">
+                    <h3>{{ loop.index }}. {{ question.question_text }}</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="1" id="question_{{ question.id }}_option_1">
+                        <label class="form-check-label" for="question_{{ question.id }}_option_1">{{ question.option_1 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="2" id="question_{{ question.id }}_option_2">
+                        <label class="form-check-label" for="question_{{ question.id }}_option_2">{{ question.option_2 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="3" id="question_{{ question.id }}_option_3">
+                        <label class="form-check-label" for="question_{{ question.id }}_option_3">{{ question.option_3 }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="question_{{ question.id }}" value="4" id="question_{{ question.id }}_option_4">
+                        <label class="form-check-label" for="question_{{ question.id }}_option_4">{{ question.option_4 }}</label>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary" onclick="navigateQuestion(-1)">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="navigateQuestion(1)">Next</button>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-success">Submit Quiz</button>
+            </div>
+        </form>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('login.logout') }}" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+</body>
+</html>

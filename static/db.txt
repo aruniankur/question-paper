@@ -1,0 +1,38 @@
+CREATE TABLE quizzes (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,  -- Quiz title
+    description TEXT,  -- Brief description of the quiz
+    time_limit INT,  -- Time in minutes
+    total_questions INT,  -- Total number of questions in the quiz
+    difficulty VARCHAR(50),  -- Difficulty level (e.g., 'easy', 'medium', 'hard')
+    topic VARCHAR(100),  -- Category or subject of the quiz (e.g., 'Math', 'Science')
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY,
+    quiz_id INT REFERENCES quizzes(id) ON DELETE CASCADE,
+    question_text TEXT NOT NULL,  -- The actual question
+    option_1 TEXT,  -- First answer option
+    option_2 TEXT,  -- Second answer option
+    option_3 TEXT,  -- Third answer option
+    option_4 TEXT,  -- Fourth answer option
+    correct_option INT  -- Indicates which option is correct (1, 2, 3, or 4)
+);
+
+
+CREATE TABLE quiz_results (
+    id SERIAL PRIMARY KEY,
+    user_id INT,  -- User ID to identify who took the quiz (could be hardcoded for you and your friend)
+    quiz_id INT REFERENCES quizzes(id) ON DELETE CASCADE,
+    score INT DEFAULT 0,  -- Final score, starts at 0
+    total_questions INT,  -- The total number of questions in the quiz
+    correct_answers INT,  -- The number of correct answers
+    time_taken INT,  -- Time taken to complete the quiz in seconds (optional)
+    has_taken BOOLEAN DEFAULT FALSE,  -- Indicates whether the quiz has been taken
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- When the quiz was completed
+);
+
+
+

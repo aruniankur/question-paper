@@ -1,0 +1,33 @@
+/quiz_app/
+│
+├── /static/                     # CSS, JS, images
+│   ├── style.css                # Basic styles
+├── /templates/                  # HTML files
+│   ├── login.html               # Login form
+│   ├── dashboard.html           # Dashboard for quizer , this will contain all the quiz name , number of questions and info of the test, it will have button to go to the test.
+│   ├── quiz_page.html           # Quiz attempt page for quizer , this page will show 
+│   ├── quiz_result.html         # Page showing quizer’s score , this will show the score and all the question with the correct answer and answer marker by the user(+3 for correct, -1 for wrong and 0 for not attempting )
+│   ├── create_quiz.html         # Form for creating quiz (questionmaker)
+│   ├── add_questions.html       # Form for adding questions to sections
+├── /routes/
+│   ├── auth.py                  # Handles login and authentication logic
+│   └── quiz.py                  # Quiz attempt and submission handling logic 
+|   └── create.py                # Quiz result and submission handling logic and will also give questions and correct answers and wrong answer. 
+├── app.py                       # Main entry point for the Flask app
+├── config.py                    # Configuration file for Flask (e.g., secret key)
+# this can be miss ├── quiz_data.py                 # Data storage for quizzes (in-memory or database)
+# this can be miss └── users.py                     # Stores user login info (hardcoded for 2 users)
+
+
+---------------
+
+activation : 
+
+source venv/bin/activate
+
+
+flask --debug run 
+
+
+--------------------------------
+
