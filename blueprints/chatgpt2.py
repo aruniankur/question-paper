@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 api_blueprint = Blueprint('api', __name__)
 
-os.environ["OPENAI_API_KEY"] =  os.getenv('OPENAI_API_KEY')
-client = OpenAI()
+api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=api_key)
 # Configure your OpenAI API key here
 
 
