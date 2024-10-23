@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 from openai import OpenAI
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 api_blueprint = Blueprint('api', __name__)
 
 api_key = os.getenv('OPENAI_API_KEY')
