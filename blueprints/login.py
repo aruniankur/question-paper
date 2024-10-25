@@ -6,7 +6,7 @@ login_blueprint = Blueprint('login', __name__)
 
 # Hardcoded users for simplicity
 users = {
-    'Alka': {'password': 'cat@quiz', 'role': 'quizer'},
+    'testperson': {'password': 'quizer', 'role': 'quizer'},
     'nakaajaaaddkc': {'password': '12345678', 'role': 'questionmaker'}
 }
 
